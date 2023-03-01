@@ -2,7 +2,7 @@
   "name": "theassistent",
   "displayName": "TheAssistent",
   "description": "Interact with the OpenAI API directly from VSCode",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "icon": "logo.png",
   "publisher": "Jeroen",
   "license": "MIT",
