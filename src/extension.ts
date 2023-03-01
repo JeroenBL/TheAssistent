@@ -13,9 +13,6 @@ export async function activate(context: vscode.ExtensionContext) {
 		await window.showInformationMessage(`Version: [${latestVersion.version}] of TheAssistent is now available on: [Github](https://github.com/JeroenBL/TheAssistent/releases/latest)`);
 	}
 
-	// Delay registration of commands to wait for VSCode to fully load
-	await new Promise(resolve => setTimeout(resolve, 5000));
-	
 	registerCommands();
 }
 
@@ -50,7 +47,7 @@ async function registerCommandConvertToAcademicEnglish() {
 	const maxTokens = 700;
 	const topP = 0.1;
 	
-	await getCompletionResult(prompt, model, temperature, maxTokens, topP, selectedText);
+	await getCompletionResult(prompt, model, temperature, maxTokens, topP);
 }
 
 // Registers the command for: [ConvertToSpecificLanguage]
@@ -73,7 +70,7 @@ async function registerCommandConvertToSpecificLanguage() {
 	const maxTokens = undefined;
 	const topP = 1;
 
-	await getCompletionResult(prompt, model, temperature, maxTokens, topP, selectedText);
+	await getCompletionResult(prompt, model, temperature, maxTokens, topP);
 }
 
 // Registers the command for: [ConvertToPowerShell]
@@ -86,13 +83,13 @@ async function registerCommandConvertToPowerShell() {
 	const selection = editor.selection;
 	const selectedText = editor.document.getText(selection);
 
-	const prompt = `I want you to convert the following code to PowerShell:\n\n${selectedText}\n\nwrapped in a MarkDown PowerShell code block.`;
+	const prompt = `I want you to convert the following code to PowerShell:\n\n${selectedText}`;
 	const model = "text-davinci-003";
 	const temperature = 0.3;
 	const maxTokens = undefined;
 	const topP = 1;
 
-	await getCompletionResult(prompt, model, temperature, maxTokens, topP, selectedText);
+	await getCompletionResult(prompt, model, temperature, maxTokens, topP);
 }
 
 // Registers the command for: [ExplainCode]
@@ -111,7 +108,7 @@ async function registerCommandExplainCode() {
 	const maxTokens = undefined;
 	const topP = 1;
 
-	await getCompletionResult(prompt, model, temperature, maxTokens, topP, selectedText);
+	await getCompletionResult(prompt, model, temperature, maxTokens, topP);
 }
 
 // Registers the command for: [AddCodeComments]
@@ -124,13 +121,13 @@ async function registerCommandAddCodeComments() {
 	const selection = editor.selection;
 	const selectedText = editor.document.getText(selection);
 
-	const prompt = `Add code comments for each line for the following PowerShell code:\n\n${selectedText}\n\nand return the code wrapped in a MarkDown PowerShell code block.`;
+	const prompt = `Add code comments for each line for the following PowerShell code:\n\n${selectedText}`;
 	const model = "text-davinci-003";
 	const temperature = 1;
 	const maxTokens = undefined;
 	const topP = 1;
 	
-	await getCompletionResult(prompt, model, temperature, maxTokens, topP, selectedText);
+	await getCompletionResult(prompt, model, temperature, maxTokens, topP);
 }
 
 // Registers the command for: [createPowerShellRegex]
@@ -146,13 +143,13 @@ async function registerCommandCreatePowerShellRegex() {
 		prompt: 'Specify the PowerShell regex you need',
 		value: 'a regex that matches a url'
 	});
-	const prompt = `Write a regex using PowerShell match for:\n\n${input}\n\nand include a code example wrapped in a MarkDown PowerShell code block.`;
+	const prompt = `Write a regex using PowerShell match for:\n\n${input}\n\n and only return a concise PowerShell code example that clearly shows how to use it.`;
 	const model = "text-davinci-003";
 	const temperature = 1;
 	const maxTokens = undefined;
 	const topP = 1;
 	
-	await getCompletionResult(prompt, model, temperature, maxTokens, topP, selectedText);
+	await getCompletionResult(prompt, model, temperature, maxTokens, topP);
 }
 
 // Registers the command for: [getCompletionBasedOnUserPrompt]
@@ -165,7 +162,7 @@ async function registerCommandGetCompletionBasedOnUserPrompt() {
 	const prompt = await vscode.window.showInputBox({ prompt: 'Specify prompt' });
 	
 	if (prompt !== undefined && prompt !== '') {
-		await getCompletionResult(prompt, undefined, undefined, undefined, undefined, prompt);
+		await getCompletionResult(prompt, undefined, undefined, undefined, undefined);
 	}
 }
 
@@ -185,7 +182,7 @@ async function registerCommandRequestCodeReview() {
 	const maxTokens = undefined;
 	const topP = 1;
 	
-	await getCompletionResult(prompt, model, temperature, maxTokens, topP, selectedText);
+	await getCompletionResult(prompt, model, temperature, maxTokens, topP);
 }
 
 // Registers the command for: [getMeetingSummary]
@@ -200,14 +197,14 @@ async function registerCommandGetMeetingSummary() {
 
 	const prompt = `Convert my short hand notes into a first-hand account of the meeting. My notes:\n\n${selectedText}`;
 	
-	await getCompletionResult(prompt, undefined, undefined, undefined, undefined, selectedText);
+	await getCompletionResult(prompt, undefined, undefined, undefined, undefined);
 }
 
 // Async function that invokes the 'postAICompletion' function and creates the HTML view
-async function getCompletionResult(prompt?: string, model?: string, temperature?: number, maxTokens?: number, topP?: number, selectedText?: string) {
+async function getCompletionResult(prompt?: string, model?: string, temperature?: number, maxTokens?: number, topP?: number) {
 	try {
 		const response = await postAICompletion(prompt, model, temperature, maxTokens, topP);
-		await createHTMLView(response, selectedText);
+		await createHTMLView(response, prompt);
 	} catch (error) {
 		console.error(error);
 		throw error;
@@ -240,36 +237,115 @@ async function postAICompletion(prompt?: string, model?: string, temperature?: n
 	return vscode.window.withProgress({
 		location: vscode.ProgressLocation.Notification,
 		title: 'TheAssistent',
-		cancellable: false
-	}, async (progress) => {
+		cancellable: true // set cancellable option to true
+	}, async (progress, token) => { // add token parameter to function
+		token.onCancellationRequested(() => {
+			// handle cancellation request
+			vscode.window.showInformationMessage('API call cancelled');
+		});
 		progress.report({ message: 'Getting completion result...' });
 		const response = await axios.post('https://api.openai.com/v1/completions', requestBody, { headers });
 		progress.report({ message: 'Completion result ready...' });
 		return response;
 	});
 }
-
+  
 // Async function that creates an HTML view containig the result
 async function createHTMLView(result: any, lineText?: any) {
 	const plainTextResult = result.data.choices[0].text;
-	const htmlResult = `
-      <div style="font-family: sans-serif;">
-	  	<h2>Original text:</h2>
-		${md.render(lineText)}
-		</br>
-        <h2>GPT completion result:</h2>
-        ${md.render(plainTextResult)}
-      </div>
-    `;
+const htmlResult = `
+  <html>
+  <head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
+  <style>
+  body {
+	  background-color: #282c34;
+	  font-family: 'Roboto Mono', monospace;
+	  margin: 0;
+	  padding: 0;
+  }
+
+  h2 {
+	  font-size: 1rem;
+	  color: #3565be;
+  }
+
+  pre {
+	  background-color: #1e2127;
+	  color: #977108;
+	  font-size: 1rem;
+	  padding: 0.5rem;
+  }
+
+  button {
+	  font-family: 'Roboto Mono', monospace;
+	  background-color: #0096fa;
+	  color: white;
+	  border: none;
+	  padding: 0.2rem rem;
+	  cursor: pointer;
+	  transition: all 0.2s ease;
+  }
+
+  button:hover {
+	  background-color: #2c3e52;
+  }
+
+  blockquote {
+	  background-color: #1e2127;
+	  margin: 0;
+	  margin-bottom: 1em;
+	  padding: 0.5rem;
+	  color: #c4c5c7;
+  }
+</style>
+</head>
+    <body>
+      <blockquote>${lineText}</blockquote>
+      <br />
+      <pre>${plainTextResult}</pre>
+      <button clas="button" id="copy-button">Copy</button>
+    </body>
+    <script>
+			const vscode = acquireVsCodeApi();
+			const copyButton = document.querySelector("#copy-button");
+
+			// Add click event listener to copy button
+			copyButton.addEventListener("click", () => {
+			vscode.postMessage({ command: "copy" });
+			});
+			
+			vscode.postMessage({ command: "init" });
+		</script>
+  </html>
+`;
 
 	const panel = vscode.window.createWebviewPanel(
-		"Completion",
-		"Completion Results",
-		vscode.ViewColumn.Beside,
-		{}
+	  "Completion",
+	  "Completion result",
+	  vscode.ViewColumn.Beside,
+	  {
+		enableScripts: true // Enable JavaScript in the webview
+	  }
 	);
-
+  
 	panel.webview.html = htmlResult;
+
+	// Add click event listener to copy button
+	panel.webview.onDidReceiveMessage((message) => {
+		if (message.command === "copy") {
+		  let textToCopy = plainTextResult;
+		  if (textToCopy.startsWith("<pre><code>") && textToCopy.endsWith("</code></pre>")) {
+			textToCopy = textToCopy.slice(11, -13);
+		  }
+		  vscode.env.clipboard.writeText(textToCopy).then(() => {
+			vscode.window.showInformationMessage("Text copied to clipboard!");
+		  });
+		}
+	});
+
+	// Add script to webview to send message when button is clicked
+	panel.webview.postMessage({ command: "init" });
 }
 
 // Checks if the installed extension is the latest version and displays a message if its not
