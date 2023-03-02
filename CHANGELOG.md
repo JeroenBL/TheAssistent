@@ -1,6 +1,6 @@
 # Change Log
 
-## 1.0.1 - 01-03-2023
+## 1.0.1 - 02-03-2023
 
 ### Fixed
 
@@ -12,7 +12,6 @@
 
 - Added a `Copy` button to the webview panel.
 - Render the original prompt as a `blockquote`.
-- Added some styling to the HTML webview panel.
 - Added the option to cancel the API request to OpenAI with a `cancel` button on the progress bar.
 
 ## 1.0.0 - 26-02-2023

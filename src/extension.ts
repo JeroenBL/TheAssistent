@@ -253,72 +253,28 @@ async function postAICompletion(prompt?: string, model?: string, temperature?: n
 // Async function that creates an HTML view containig the result
 async function createHTMLView(result: any, lineText?: any) {
 	const plainTextResult = result.data.choices[0].text;
-const htmlResult = `
-  <html>
-  <head>
-  <link href="https://fonts.googleapis.com/css?family=Roboto+Mono&display=swap" rel="stylesheet">
-  <style>
-  body {
-	  background-color: #282c34;
-	  font-family: 'Roboto Mono', monospace;
-	  margin: 0;
-	  padding: 0;
-  }
-
-  h2 {
-	  font-size: 1rem;
-	  color: #3565be;
-  }
-
-  pre {
-	  background-color: #1e2127;
-	  color: #977108;
-	  font-size: 1rem;
-	  padding: 0.5rem;
-  }
-
-  button {
-	  font-family: 'Roboto Mono', monospace;
-	  background-color: #0096fa;
-	  color: white;
-	  border: none;
-	  padding: 0.2rem rem;
-	  cursor: pointer;
-	  transition: all 0.2s ease;
-  }
-
-  button:hover {
-	  background-color: #2c3e52;
-  }
-
-  blockquote {
-	  background-color: #1e2127;
-	  margin: 0;
-	  margin-bottom: 1em;
-	  padding: 0.5rem;
-	  color: #c4c5c7;
-  }
-</style>
-</head>
-    <body>
-      <blockquote>${lineText}</blockquote>
-      <br />
-      <pre>${plainTextResult}</pre>
-      <button clas="button" id="copy-button">Copy</button>
-    </body>
-    <script>
-			const vscode = acquireVsCodeApi();
-			const copyButton = document.querySelector("#copy-button");
-
-			// Add click event listener to copy button
-			copyButton.addEventListener("click", () => {
-			vscode.postMessage({ command: "copy" });
-			});
-			
-			vscode.postMessage({ command: "init" });
-		</script>
-  </html>
-`;
+	const htmlResult = `
+	<div style="font-family: sans-serif; font-size: 14px;">
+	  <blockquote>${lineText}</blockquote>
+	  <br />
+	  <h2>Results:</h2>
+	  <pre>${plainTextResult}</pre>
+	  <br />
+	  <button id="copy-button" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">Copy</button>
+	</div>
+	<body>
+	  <script>
+		  const vscode = acquireVsCodeApi();
+		  const copyButton = document.querySelector("#copy-button");
+	
+		  // Add click event listener to copy button
+		  copyButton.addEventListener("click", () => {
+		  vscode.postMessage({ command: "copy" });
+		  });
+		  
+		  vscode.postMessage({ command: "init" });
+	  </script>
+	</body>`;
 
 	const panel = vscode.window.createWebviewPanel(
 	  "Completion",
