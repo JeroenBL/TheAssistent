@@ -1,5 +1,12 @@
 # Change Log
 
+## 1.0.2 - 03-03-2023
+
+### Fixed
+
+- Fixed issue that the completion text was not wrapped.
+- Fixed issue that original prompt was not aligned.
+
 ## 1.0.1 - 02-03-2023
 
 ### Fixed
