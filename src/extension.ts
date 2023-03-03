@@ -1,16 +1,14 @@
 import * as vscode from 'vscode';
 import * as markdownit from 'markdown-it';
-import { window } from 'vscode';
 
 const axios = require("axios");
-const md = new markdownit();
 const packageJson = require('../package.json');
 
 // Gets called when the extension is activated
 export async function activate(context: vscode.ExtensionContext) {
 	const latestVersion = await getLatestReleaseInfo('JeroenBL', 'TheAssistent');
 	if (latestVersion && latestVersion.version !== packageJson.version) {
-		await window.showInformationMessage(`Version: [${latestVersion.version}] of TheAssistent is now available on: [Github](https://github.com/JeroenBL/TheAssistent/releases/latest)`);
+		await vscode.window.showInformationMessage(`Version: [${latestVersion.version}] of TheAssistent is now available on: [Github](https://github.com/JeroenBL/TheAssistent/releases/latest)`);
 	}
 
 	registerCommands();
@@ -255,10 +253,10 @@ async function createHTMLView(result: any, lineText?: any) {
 	const plainTextResult = result.data.choices[0].text;
 	const htmlResult = `
 	<div style="font-family: sans-serif; font-size: 14px;">
-	  <blockquote>${lineText}</blockquote>
+   	  <blockquote style="margin-left: 0; padding-left: 1em; border-left: 5px solid #ccc;">${lineText}</blockquote>
 	  <br />
 	  <h2>Results:</h2>
-	  <pre>${plainTextResult}</pre>
+	  <pre style="white-space: pre-wrap;">${plainTextResult}</pre>
 	  <br />
 	  <button id="copy-button" style="background-color: #4CAF50; color: white; border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin: 4px 2px; cursor: pointer;">Copy</button>
 	</div>
