@@ -2,7 +2,7 @@
   "name": "theassistent",
   "displayName": "TheAssistent",
   "description": "Interact with the OpenAI API directly from VSCode",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "icon": "logo.png",
   "publisher": "Jeroen",
   "license": "MIT",
@@ -30,7 +30,31 @@
   ],
   "main": "./dist/extension.js",
   "contributes": {
-    "configuration": {
+    "menus": {
+      "editor/context": [
+        {
+          "command": "theassistent.convertToAcademicEnglish",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "theassistent.convertToPowerShell",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "theassistent.explainCode",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "theassistent.requestCodeReview",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "theassistent.explainError",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+     "configuration": {
       "title": "The Assistent",
       "properties": {
         "theassistent.apiKey": {
@@ -95,6 +119,10 @@
       {
         "command": "theassistent.getMeetingSummary",
         "title": "The Assistent: Converts your short descriptive notes to a first hand account"
+      },
+      {
+        "command": "theassistent.explainError",
+        "title": "The Assistent: Explains the error and provides solutions and ways to debug"
       }
     ]
   },

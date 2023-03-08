@@ -3,6 +3,7 @@ import * as markdownit from 'markdown-it';
 
 const axios = require("axios");
 const packageJson = require('../package.json');
+const md = new markdownit();
 
 // Gets called when the extension is activated
 export async function activate(context: vscode.ExtensionContext) {
@@ -27,6 +28,7 @@ function registerCommands() {
 	vscode.commands.registerCommand('theassistent.getCompletionBasedOnUserPrompt', registerCommandGetCompletionBasedOnUserPrompt);
 	vscode.commands.registerCommand('theassistent.requestCodeReview', registerCommandRequestCodeReview);
 	vscode.commands.registerCommand('theassistent.getMeetingSummary', registerCommandGetMeetingSummary);
+	vscode.commands.registerCommand('theassistent.explainError', registerCommandExplainError);
 }
 
 // Registers the command for: [ConvertToAcademicEnglish]
@@ -141,7 +143,7 @@ async function registerCommandCreatePowerShellRegex() {
 		prompt: 'Specify the PowerShell regex you need',
 		value: 'a regex that matches a url'
 	});
-	const prompt = `Write a regex using PowerShell match for:\n\n${input}\n\n and only return a concise PowerShell code example that clearly shows how to use it.`;
+	const prompt = `Write a regex using PowerShell match for:\n\n${input}\n\n and only return a concise PowerShell code example that clearly shows how to use it. Do not wrap the result in backticks.`;
 	const model = "text-davinci-003";
 	const temperature = 1;
 	const maxTokens = undefined;
@@ -194,6 +196,21 @@ async function registerCommandGetMeetingSummary() {
 	const selectedText = editor.document.getText(selection);
 
 	const prompt = `Convert my short hand notes into a first-hand account of the meeting. My notes:\n\n${selectedText}`;
+	
+	await getCompletionResult(prompt, undefined, undefined, undefined, undefined);
+}
+
+// Registers the command for: [explainError]
+async function registerCommandExplainError() {
+	const editor = vscode.window.activeTextEditor;
+	if (!editor) {
+		return;
+	}
+
+	const selection = editor.selection;
+	const selectedText = editor.document.getText(selection);
+
+	const prompt = `I want you to provide a clear explanation of the following error and also provide five solutions and ways to debug the error:\n\n${selectedText}`;
 	
 	await getCompletionResult(prompt, undefined, undefined, undefined, undefined);
 }
@@ -253,7 +270,7 @@ async function createHTMLView(result: any, lineText?: any) {
 	const plainTextResult = result.data.choices[0].text;
 	const htmlResult = `
 	<div style="font-family: sans-serif; font-size: 14px;">
-   	  <blockquote style="margin-left: 0; padding-left: 1em; border-left: 5px solid #ccc;">${lineText}</blockquote>
+   	   ${md.render(lineText)}
 	  <br />
 	  <h2>Results:</h2>
 	  <pre style="white-space: pre-wrap;">${plainTextResult}</pre>

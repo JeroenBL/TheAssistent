@@ -71,6 +71,12 @@ All commands are available from the VSCode command palette by clicking on: `View
 
 To see all available commands, browse to: `The Assistent`.
 
+### Context menu
+
+Some commands are also available from the `context menu`. See the [Command Setion](#commands) for an overview.
+
+> :exclamation: __The commands in the context menu are only available when text is selected.__
+
 ## Settings
 
 The extension contributes to the following settings:
@@ -93,17 +99,18 @@ For an overview of all available models, please refer to: https://platform.opena
 
 The following commands are available:
 
-| Command | Description | Settings 
-| - | - | - |
-| theassistent.convertToAcademicEnglish | Converts the current line(s) to academic English | - Model: `text-davinci-003`<br> - Temperature: `1`<br> - MaxTokens: `700`<br> - TopP: `0.1`
-| theassistent.convertToSpecificLanguage | Converts the current line(s to the specified language | - Model: `text-davinci-003`<br> - Temperature: `0.3`<br> - MaxTokens: `undefined`<br> - TopP: `1`
-| theassistent.getCompletionBasedOnUserPrompt | Get a completion from the OpenAI API | As specified: in `theassistent.configuration`
-| theassistent.convertToPowerShell | Converts code to PowerShell | - Model: `text-davinci-003`<br> - Temperature: `0.3`<br> - MaxTokens: `undefined`<br> - TopP: `1`
-| theassistent.explainCode | Explains the selected code | - Model: `text-davinci-003`<br> - Temperature: `1`<br> - MaxTokens: `undefined`<br> - TopP: `1`
-| theassistent.createPowerShellRegex | Creates a new regex based on the provided details | - Model: `text-davinci-003`<br> - Temperature: `1`<br> - MaxTokens: `undefined`<br> - TopP: `1`
-| theassistent.addCodeComments | Add code comments to the selected PowerShell code | - Model: `text-davinci-003`<br> - Temperature: `1`<br> - MaxTokens: `undefined`<br> - TopP: `1`
-| theassistent.requestCodeReview | Request a code review for the selected PowerShell code | - Model: `text-davinci-003`<br> - Temperature: `0`<br> - MaxTokens: `undefined`<br> - TopP: `1`
-| theassistent.getMeetingSummary | Converts your short descriptive notes to a first hand account | As specified in: `theassistent.configuration`
+| Command | Description | Settings | Where to find |
+| - | - | - | - |
+| theassistent.convertToAcademicEnglish | Converts the current line(s) to academic English | - Model: `text-davinci-003`<br> - Temperature: `1`<br> - MaxTokens: `700`<br> - TopP: `0.1` | - Command palette<br> - Context menu
+| theassistent.convertToSpecificLanguage | Converts the current line(s) to the specified language | - Model: `text-davinci-003`<br> - Temperature: `0.3`<br> - MaxTokens: `undefined`<br> - TopP: `1` | - Command palette<br>
+| theassistent.getCompletionBasedOnUserPrompt | Get a completion from the OpenAI API | As specified: in `theassistent.configuration` | - Command palette<br>
+| theassistent.convertToPowerShell | Converts code to PowerShell | - Model: `text-davinci-003`<br> - Temperature: `0.3`<br> - MaxTokens: `undefined`<br> - TopP: `1` | - Command palette<br> - Context menu
+| theassistent.explainCode | Explains the selected code | - Model: `text-davinci-003`<br> - Temperature: `1`<br> - MaxTokens: `undefined`<br> - TopP: `1` | - Command palette<br> - Context menu
+| theassistent.createPowerShellRegex | Creates a new regex based on the provided details | - Model: `text-davinci-003`<br> - Temperature: `1`<br> - MaxTokens: `undefined`<br> - TopP: `1` | - Command palette<br>
+| theassistent.addCodeComments | Add code comments to the selected PowerShell code | - Model: `text-davinci-003`<br> - Temperature: `1`<br> - MaxTokens: `undefined`<br> - TopP: `1` | - Command palette<br>
+| theassistent.requestCodeReview | Request a code review for the selected PowerShell code | - Model: `text-davinci-003`<br> - Temperature: `0`<br> - MaxTokens: `undefined`<br> - TopP: `1` | - Command palette<br> - Context menu
+| theassistent.getMeetingSummary | Converts your short descriptive notes to a first hand account | As specified in: `theassistent.configuration` | - Command palette<br>
+| theassistent.explainError | Explains the error and provides solutions and ways to debug | As specified in: `theassistent.configuration` | - Command palette<br> - Context menu
 
 > :exclamation: If a setting is set to `undefined` the default value will be used.
 
