@@ -1,5 +1,21 @@
 # Change Log
 
+## 1.0.3 - 08-03-2023
+
+### Fixed
+
+- Fixed issue that all regex where wrapped with backticks.
+
+### Changed
+
+- Changed the prompt that was send to be rendered as markdown in the htmlview.
+
+### Added
+
+- Added command: `explainError` to will explain errors that occured in your code.
+- Added commands: `convertToAcademicEnglish`, `convertToPowerShell`, `explainCode`, `requestCodeReview` and `explainError` to the context menu but only to
+show when text is selected in the active editor.
+
 ## 1.0.2 - 03-03-2023
 
 ### Fixed
